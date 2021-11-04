@@ -7,19 +7,42 @@ const APIError = require('../helpers/APIError');
  * User Schema
  */
 const UserSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true
-  },
+  firstName : {
+      type: String,
+      required: true,
+      max: 255
+    },
+  middleName : {
+      type: String,
+      required: false
+    },
+  lastName : {
+      type: String,
+      required: true,      
+      max: 255
+    },    
   mobileNumber: {
     type: String,
     required: true,
-    match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
-  },
+    match: [/^[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[0-9]{3,15}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
+  },    
+  email : {
+      type: String,
+      required: true,
+      min: 6,
+      max: 255,
+      match: [/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z_\-0-9]+\.)+[a-zA-Z]{2,}))/, 'The value of path {PATH} ({VALUE}) is not a valid email id.']
+    },
+  password : {
+      type: String,
+      required: true,
+      min: 6,
+      max: 2048
+    },
   createdAt: {
-    type: Date,
-    default: Date.now
-  }
+      type: Date,
+      default: Date.now
+    }
 });
 
 /**
