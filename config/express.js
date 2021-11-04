@@ -1,5 +1,6 @@
 const express = require('express');
 const logger = require('morgan');
+const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const compress = require('compression');
 const methodOverride = require('method-override');
@@ -21,9 +22,13 @@ if (config.env === 'development') {
 
 // parse body params and attache them to req.body
 // middleware
+//app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.static('./public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
+
 app.use(cookieParser());
 app.use(compress());
 app.use(methodOverride());

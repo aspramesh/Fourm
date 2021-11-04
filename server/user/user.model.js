@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
     },
   externalId : {
       type: String,
-      required: false
+      required: false      
     },
   createdAt: {
       type: Date,
@@ -55,6 +55,7 @@ const UserSchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
+
 
 /**
  * Methods

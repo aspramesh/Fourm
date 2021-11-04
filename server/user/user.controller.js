@@ -26,7 +26,7 @@ function get(req, res) {
  * @property {string} req.body.mobileNumber - The mobileNumber of user.
  * @returns {User}
  */
-function create(req, res, next) {
+function create (req, res, next) {
   const user = new User({
     firstName: req.body.firstName,
     middleName: req.body.middleName,
@@ -35,9 +35,8 @@ function create(req, res, next) {
     email: req.body.email,
     password: req.body.password,
     externalId: req.body.externalId    
-  });
-
-  user.save()
+  });    
+    user.save()
     .then(savedUser => res.json(savedUser))
     .catch(e => next(e));
 }
