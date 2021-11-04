@@ -39,6 +39,10 @@ const UserSchema = new mongoose.Schema({
       min: 6,
       max: 2048
     },
+  externalId : {
+      type: String,
+      required: false
+    },
   createdAt: {
       type: Date,
       default: Date.now
