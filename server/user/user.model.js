@@ -1,7 +1,9 @@
 const Promise = require('bluebird');
 const mongoose = require('mongoose');
+const validator = require('validator');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
+const bcrypt = require('bcryptjs');
 
 
 /**
@@ -10,7 +12,7 @@ const APIError = require('../helpers/APIError');
 const UserSchema = new mongoose.Schema({
   firstName : {
       type: String,
-      required: true,
+      required: [true, 'Please provide first name'],
       max: 255
     },
   middleName : {
@@ -19,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     },
   lastName : {
       type: String,
-      required: true,      
+      required: [true, 'Please provide last name'],
       max: 255
     },    
   mobileNumber: {
@@ -28,11 +30,16 @@ const UserSchema = new mongoose.Schema({
     match: [/^[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[0-9]{3,15}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
   },    
   email : {
-      type: String,
-      required: true,
+      type: String,      
       min: 6,
       max: 255,
-      match: [/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z_\-0-9]+\.)+[a-zA-Z]{2,}))/, 'The value of path {PATH} ({VALUE}) is not a valid email id.']
+      //match: [/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z_\-0-9]+\.)+[a-zA-Z]{2,}))/, 'The value of path {PATH} ({VALUE}) is not a valid email id.']
+      unique: true,
+      required: [true, 'Please provide email'],
+      validate: {
+        validator: validator.isEmail,
+        message: 'Please provide valid email',
+      }
     },
   password : {
       type: String,

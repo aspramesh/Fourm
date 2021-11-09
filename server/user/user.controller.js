@@ -26,7 +26,7 @@ function get(req, res) {
  * @property {string} req.body.mobileNumber - The mobileNumber of user.
  * @returns {User}
  */
-function create (req, res, next) {
+const  create = async (req, res) => {
   const user = new User({
     firstName: req.body.firstName,
     middleName: req.body.middleName,
@@ -35,11 +35,10 @@ function create (req, res, next) {
     email: req.body.email,
     password: req.body.password,
     externalId: req.body.externalId    
-  });    
-    user.save()
-    .then(savedUser => res.json(savedUser))
-    .catch(e => next(e));
-}
+  });
+  const savedUser = await  user.save();
+  res.json(savedUser);  
+};
 
 /**
  * Update existing user
@@ -63,11 +62,19 @@ function update(req, res, next) {
  * @property {number} req.query.limit - Limit number of users to be returned.
  * @returns {User[]}
  */
-function list(req, res, next) {
+const  list = async (req, res) =>  {
   const { limit = 50, skip = 0 } = req.query;
-  User.list({ limit, skip })
-    .then(users => res.json(users))
-    .catch(e => next(e));
+  const users =  await User.list({ limit, skip })  
+    //res.json(users)  
+    res.status(200).json(users)
+  /*try{
+    const users =  await User.list2({ limit, skip })  
+    res.json(users)  
+  }
+  catch (err){
+    throw new Error ("man error by check")
+    //next(err)
+  }*/
 }
 
 /**
