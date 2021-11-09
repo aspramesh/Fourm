@@ -18,7 +18,7 @@ const winstonInstance = require('./config/winston');
 const routes = require('../index.route');
 const config = require('./config/config');
 const errorMiddleware = require('./middleware/error-handler');
-
+const notFoundMiddleware = require('./middleware/not-found');
 const app = express();
 
 if (config.env === 'development') {
