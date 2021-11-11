@@ -4,24 +4,26 @@ module.exports = {
   // POST /api/users
   createUser: {
     body: {
-      firstName: Joi.string().required(),
-      lastName: Joi.string().required(),
-      mobileNumber: Joi.string().regex(/^[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[0-9]{3,15}$/).required(),
-      email: Joi.string().regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z_\-0-9]+\.)+[a-zA-Z]{2,}))/).required(),
-      password:Joi.string().required()
+      firstName: Joi.string().required().error(() => {return {message: 'Firstname can not be empty'};}),
+      lastName: Joi.string().required().error(() => {return {message: 'Lastname can not be empty'};}),
+      mobileNumber: Joi.string().regex(/^[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[0-9]{3,15}$/).required().error(() => {return {message: 'Please provide a valid mobile number'};}),
+      email: Joi.string().regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z_\-0-9]+\.)+[a-zA-Z]{2,}))/)
+              .required().error(() => {return {message: 'Please provide a valid email id'};}),
+      password:Joi.string().required().error(() => {return {message: 'Password can not be empty'};})
     }
   },
 
   // UPDATE /api/users/:userId
   updateUser: {
     body: {
-      firstName: Joi.string().required(),
-      lastName: Joi.string().required(),
-      mobileNumber: Joi.string().regex(/^[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[0-9]{3,15}$/).required(),
-      email: Joi.string().regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z_\-0-9]+\.)+[a-zA-Z]{2,}))/).required()
+      firstName: Joi.string().required().error(() => {return {message: 'Firstname can not be empty'};}),
+      lastName: Joi.string().required().error(() => {return {message: 'Lastname can not be empty'};}),
+      mobileNumber: Joi.string().regex(/^[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[0-9]{3,15}$/).required().error(() => {return {message: 'Please provide a valid mobile number'};}),
+      email: Joi.string().regex(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z_\-0-9]+\.)+[a-zA-Z]{2,}))/)
+              .required().error(() => {return {message: 'Please provide a valid email id'};})
     },
     params: {
-      userId: Joi.string().hex().required()
+      userId: Joi.string().hex().required().error(() => {return {message: 'Userid can not be empty'};})
     }
   },
 

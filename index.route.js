@@ -1,4 +1,6 @@
 const express = require('express');
+//const userRoutes = require('./server/routes/userRoutes');
+//const authRoutes = require('./server/routes/authRoutes');
 const userRoutes = require('./server/user/user.route');
 const authRoutes = require('./server/auth/auth.route');
 

@@ -1,5 +1,4 @@
 const User = require('./user.model');
-
 /**
  * Load user and append to req.
  */

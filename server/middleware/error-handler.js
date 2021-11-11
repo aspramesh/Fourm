@@ -1,31 +1,32 @@
-const APIError = require('../../server/helpers/APIError');
+const  {StatusCodes}  = require('http-status-codes');
+const CustomError = require('../errors');
 const expressValidation = require('express-validation');
 
-const errorHandlerMiddleware = async (err, req, res, next) => {
-  //console.log("test error ")
-  //console.log(err)  
-  //const {message, statusCode} = err;
-  //console.log(message)
-  //console.log(err.res.statusCode)
-  //return res.status(500).json({ msg: 'Something went wrong, please try again' })
-  //console.log("Check 123")
+const errorHandlerMiddleware = async (err, req, res, next) => {      
   if (err instanceof expressValidation.ValidationError) {
-    //console.log("Check 456")
     // validation error contains errors which is an array of error each containing message[]
     const unifiedErrorMessage = err.errors.map(error => error.messages.join('. ')).join(' and ');
-    const error = new APIError(unifiedErrorMessage, err.status, true);
-    //return next(error);
-    return res.status(400).json({"error": error,  "detail": error.message})
-  } else if (!(err instanceof APIError)) {
-   // console.log("Check 789")
-    const apiError = new APIError(err.message, err.status, err.isPublic);
-   // return next(apiError);
-   return res.status(500).json({"error": error,  "detail": error.message})
-  }
-  //return next(err);
- // console.log(err)
- 
-  return res.status(500).json({"msg": err})
+    const error = new CustomError.ValidationError (unifiedErrorMessage, StatusCodes.UNPROCESSABLE_ENTITY, true);
+    return res.status(error.status).json({...error,  "message":error.message || 'Something went wrong try again later'})
+  } else if (!(err instanceof CustomError.CustomAPIError)) {     
+    const error = new CustomError.InternalError(err.message, StatusCodes.INTERNAL_SERVER_ERROR, err.isPublic||true);     
+    if (err.name === 'ValidationError') {
+      error.message = Object.values(err.errors).map((item) => item.message).join(',');      
+      error.status = StatusCodes.UNPROCESSABLE_ENTITY;
+    }
+   if (err.code && err.code === 11000) {
+      error.message = `Duplicate value entered for ${Object.keys(err.keyValue )} field, please choose another value`;
+      error.status = StatusCodes.UNPROCESSABLE_ENTITY;
+    }
+   if (err.name === 'CastError') {
+      error.message = `No item found with id : ${err.value}`;
+      error.status = StatusCodes.NOT_FOUND;    
+    }  
+    return res.status(error.status||StatusCodes.INTERNAL_SERVER_ERROR).json({...error,  "message":error.message || 'Something went wrong try again later'})
+  } else {    
+   const error = new CustomError.CustomAPIError(err.message|| 'Something went wrong try again later', err.status || StatusCodes.BAD_REQUEST, err.isPublic||true);  
+   return res.status(error.status||StatusCodes.BAD_REQUEST).json({...err, "message": error.message || 'Something went wrong try again later'})      
+  } 
 }
 
 module.exports = errorHandlerMiddleware

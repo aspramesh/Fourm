@@ -44,9 +44,9 @@ app.use(compress());
 app.use(methodOverride());
 app.use(fileUpload());
 
-//Ramesh Check this below code
+
 // enable detailed API logging in dev env
-if (config.env === 'development') {
+/*if (config.env === 'development') {
   expressWinston.requestWhitelist.push('body');
   expressWinston.responseWhitelist.push('body');
   app.use(expressWinston.logger({
@@ -55,26 +55,25 @@ if (config.env === 'development') {
     msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
     colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
   }));
-}
+}*/
 
 // mount all routes on /api path
 app.use('/api', routes);
 
+/*/ log error in winston transports 
+ app.use(expressWinston.errorLogger({
+    winstonInstance
+}));*/
+
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
 
-// log error in winston transports 
- app.use(expressWinston.errorLogger({
-    winstonInstance
-}));
-
-//Ramesh Check this below code
-// error handler, send stacktrace only during development
+/*// error handler, send stacktrace only during development
 app.use((err, req, res, next) => // eslint-disable-line no-unused-vars
   res.status(err.status).json({
     message: err.isPublic ? err.message : httpStatus[err.status],
     stack: config.env === 'development' ? err.stack : {}
   })
-);
+);*/
 
 module.exports = app;
