@@ -1,11 +1,11 @@
-require('dotenv').config();
-const  { createLogger, format, transports }  = require('winston');
+const  { createLogger, format, transports, error }  = require('winston');
 const { combine, timestamp, printf, json, prettyPrint, errors, colorize  } = format;
 
 const devLogger = () => {
   const myFormat = printf(({ level, message, timestamp, stack }) => {
     return `${timestamp} ${level}: ${stack || message}`;
   });
+
   return createLogger({
     level: process.env.DEV_LOGGER_LEVE,
     //format: format.simple(),
@@ -18,11 +18,10 @@ const devLogger = () => {
     defaultMeta: { service: 'user-service' },
     transports: [
       new transports.Console(),
-      new transports.File({
-        filename: 'errors.log',
-      })
+      new transports.File({filename: "./Log/devLog.log", maxsize:5242880, maxFiles:500, tailable:true})
     ],
   });
+
 }
 
  module.exports = devLogger;

@@ -2,6 +2,7 @@ const  { createLogger, format, transports }  = require('winston');
 const { combine, timestamp,  printf, json, prettyPrint, errors, colorize  } = format;
 
 const prodLogger = () => {
+
   return createLogger({
     level: process.env.PROD_LOGGER_LEVE,
     //format: simple(),
@@ -12,11 +13,11 @@ const prodLogger = () => {
       json()
     ),
     defaultMeta: { service: 'user-service' },
-    transports: [
-      new transports.Console(),
-      new transports.File({ filename: 'errors.log', })
+    transports: [      
+      new transports.File({filename: "./Log/prodLog.log", maxsize:5242880, maxFiles:500, tailable:true})
     ],
   });
+  
 }
 
 module.exports = prodLogger;

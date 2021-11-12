@@ -24,8 +24,8 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
     }  
     return res.status(error.status||StatusCodes.INTERNAL_SERVER_ERROR).json({...error,  "message":error.message || 'Something went wrong try again later'})
   } else {    
-   const error = new CustomError.CustomAPIError(err.message|| 'Something went wrong try again later', err.status || StatusCodes.BAD_REQUEST, err.isPublic||true);  
-   return res.status(error.status||StatusCodes.BAD_REQUEST).json({...err, "message": error.message || 'Something went wrong try again later'})      
+   //const error = new CustomError.CustomAPIError(err.message|| 'Something went wrong try again later', err.status || StatusCodes.BAD_REQUEST, err.isPublic||true);  
+   return res.status(err.status||StatusCodes.BAD_REQUEST).json({...err, "message": err.message || 'Something went wrong try again later'})      
   } 
 }
 
