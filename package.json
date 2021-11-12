@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "nodemon index.js",
-    "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
+    "start:debug": "cross-env DEBUG=Forum:* yarn start",
     "lint": "esw *.js server config --color",
     "lint:watch": "yarn lint -- --watch",
     "precommit": "yarn lint && yarn test",
@@ -65,7 +65,7 @@
     "morgan": "1.9.0",
     "nodemon": "^2.0.15",
     "validator": "^13.7.0",
-    "winston": "^2.4.1",
+    "winston": "^3.3.0",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {

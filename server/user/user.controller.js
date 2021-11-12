@@ -1,4 +1,5 @@
 const User = require('./user.model');
+const logger = require('../logger')
 /**
  * Load user and append to req.
  */
@@ -26,6 +27,7 @@ function get(req, res) {
  * @returns {User}
  */
 const  create = async (req, res) => {
+  
   const user = new User({
     firstName: req.body.firstName,
     middleName: req.body.middleName,
