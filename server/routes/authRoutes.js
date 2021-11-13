@@ -1,6 +1,6 @@
 const express = require('express');
 const validate = require('express-validation');
-const paramValidation = require('../config/param-validation');
+const paramValidation = require('../middleware/param-validation');
 const router = express.Router();
 const { authenticateUser } = require('../middleware/authentication');
 
