@@ -1,16 +1,9 @@
-const Promise = require('bluebird');
 const mongoose = require('mongoose');
 const validator = require('validator');
-const httpStatus = require('http-status');
-const APIError = require('../helpers/APIError');
 const bcrypt = require('bcryptjs');
 
-
-/**
- * User Schema
- */
 const UserSchema = new mongoose.Schema({
-  firstName : {
+   firstName : {
       type: String,
       required: [true, 'Please provide first name'],
       max: 255
@@ -43,7 +36,7 @@ const UserSchema = new mongoose.Schema({
     },
   password : {
       type: String,
-      required: true,
+      required: [true, 'Please provide password'],
       min: 6,
       max: 2048
     },
@@ -51,63 +44,35 @@ const UserSchema = new mongoose.Schema({
       type: String,
       required: false      
     },
-  createdAt: {
-      type: Date,
-      default: Date.now
-    }
-});
-
-/**
- * Add your
- * - pre-save hooks
- * - validations
- * - virtuals
- */
-
-
-/**
- * Methods
- */
-UserSchema.method({
-});
-
-/**
- * Statics
- */
-UserSchema.statics = {
-  /**
-   * Get user
-   * @param {ObjectId} id - The objectId of user.
-   * @returns {Promise<User, APIError>}
-   */
-  get(id) {
-    return this.findById(id)
-      .exec()
-      .then((user) => {
-        if (user) {
-          return user;
-        }
-        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
-        return Promise.reject(err);
-      });
+  role: {
+    type: String,
+    enum: ['admin', 'user'],
+    default: 'user',
   },
+  verificationToken: String,
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verified: Date,
+  passwordToken: {
+    type: String,
+  },
+  passwordTokenExpirationDate: {
+    type: Date,
+  },
+  timestamps
+});
 
-  /**
-   * List users in descending order of 'createdAt' timestamp.
-   * @param {number} skip - Number of users to be skipped.
-   * @param {number} limit - Limit number of users to be returned.
-   * @returns {Promise<User[]>}
-   */
-  list({ skip = 0, limit = 50 } = {}) {
-    return this.find()
-      .sort({ createdAt: -1 })
-      .skip(+skip)
-      .limit(+limit)
-      .exec();
-  }
+UserSchema.pre('save', async function () {  
+  if (!this.isModified('password')) return;
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+UserSchema.methods.comparePassword = async function (canditatePassword) {
+  const isMatch = await bcrypt.compare(canditatePassword, this.password);
+  return isMatch;
 };
 
-/**
- * @typedef User
- */
 module.exports = mongoose.model('User', UserSchema);
