@@ -16,8 +16,8 @@ const {
 router.post('/v1/register', validate(paramValidation.createUser), register);
 router.post('/v1/login', validate(paramValidation.login), login);
 router.delete('/v1/logout', authenticateUser, logout);
-router.post('/v1/verify-email', verifyEmail);
-router.post('/v1/reset-password', resetPassword);
-router.post('/v1/forgot-password', forgotPassword);
+router.post('/v1/verify-email', validate(paramValidation.verifyEmail), verifyEmail);
+router.post('/v1/reset-password', validate(paramValidation.resetPassword), resetPassword);
+router.post('/v1/forgot-password', validate(paramValidation.forgotPassword), forgotPassword);
 
 module.exports = router;

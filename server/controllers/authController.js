@@ -12,7 +12,8 @@ const {
 const crypto = require('crypto');
 
 const register = async (req, res) => {
-  const { email, name, password } = req.body;
+  
+  const {firstName, middleName, lastName, mobileNumber, email, password, externalId} = req.body;
 
   const emailAlreadyExists = await User.findOne({ email });
   if (emailAlreadyExists) {
@@ -26,9 +27,13 @@ const register = async (req, res) => {
   const verificationToken = crypto.randomBytes(40).toString('hex');
 
   const user = await User.create({
-    name,
+    firstName,
+    middleName,
+    lastName,
+    mobileNumber,
     email,
     password,
+    externalId,    
     role,
     verificationToken,
   });
@@ -41,7 +46,7 @@ const register = async (req, res) => {
   // const forwardedProtocol = req.get('x-forwarded-proto');
 
   await sendVerificationEmail({
-    name: user.name,
+    name: user.firstName + " " + user.lastName,
     email: user.email,
     verificationToken: user.verificationToken,
     origin,
@@ -56,13 +61,12 @@ const verifyEmail = async (req, res) => {
   const { verificationToken, email } = req.body;
   const user = await User.findOne({ email });
 
-  if (!user) {
+  /*if (!user) {
     throw new CustomError.UnauthenticatedError('Verification Failed');
   }
-
   if (user.verificationToken !== verificationToken) {
     throw new CustomError.UnauthenticatedError('Verification Failed');
-  }
+  }*/
 
   (user.isVerified = true), (user.verified = Date.now());
   user.verificationToken = '';
@@ -75,14 +79,15 @@ const verifyEmail = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
+  /*if (!email || !password) {
     throw new CustomError.BadRequestError('Please provide email and password');
-  }
+  }*/
   const user = await User.findOne({ email });
 
   if (!user) {
     throw new CustomError.UnauthenticatedError('Invalid Credentials');
   }
+
   const isPasswordCorrect = await user.comparePassword(password);
 
   if (!isPasswordCorrect) {
@@ -136,10 +141,9 @@ const logout = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  if (!email) {
+  /*if (!email) {
     throw new CustomError.BadRequestError('Please provide valid email');
-  }
-
+  }  */
   const user = await User.findOne({ email });
 
   if (user) {
@@ -165,11 +169,13 @@ const forgotPassword = async (req, res) => {
     .status(StatusCodes.OK)
     .json({ msg: 'Please check your email for reset password link' });
 };
+
 const resetPassword = async (req, res) => {
   const { token, email, password } = req.body;
-  if (!token || !email || !password) {
+  /*if (!token || !email || !password) {
     throw new CustomError.BadRequestError('Please provide all values');
-  }
+  }*/
+
   const user = await User.findOne({ email });
 
   if (user) {

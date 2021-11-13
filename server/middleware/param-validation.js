@@ -33,5 +33,26 @@ module.exports = {
       username: Joi.string().required().error(() => {return {message: 'Username can not be empty'};}),
       password: Joi.string().required().error(() => {return {message: 'Password can not be empty'};})
     }
+  },
+
+  forgotPassword: {
+    body: {
+      email: Joi.string().required().error(() => {return {message: 'Please provide valid email'};})      
+    }
+  },
+
+  resetPassword: {
+    body: {
+      token: Joi.string().required().error(() => {return {message: 'Please provide valid token'};}),
+      email: Joi.string().required().error(() => {return {message: 'Please provide valid email'};}),
+      password: Joi.string().required().error(() => {return {message: 'Password can not be empty'};})
+    }
+  },
+
+  verifyEmail: {
+    body: {
+      verificationToken: Joi.string().required().error(() => {return {message: 'Please provide valid token'};}),
+      email: Joi.string().required().error(() => {return {message: 'Please provide valid email'};})     
+    }
   }
 };
