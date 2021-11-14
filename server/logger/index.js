@@ -1,13 +1,13 @@
-require('dotenv').config();
+const config = require('../config/config');
 const devLogger = require('./devLogger')
 const prodLogger = require('./prodLogger')
  
-let logger = null;
+let winstonLogger = null;
 
-if (process.env.NODE_ENV === 'development') {
-  logger = devLogger()
+if (config.env === 'development') {
+  winstonLogger = devLogger()
 } else {
-  logger = prodLogger()
+  winstonLogger = prodLogger()
 }
  
-module.exports = logger;
+module.exports = winstonLogger;

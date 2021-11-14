@@ -1,3 +1,4 @@
+const config = require('../config/config');
 const  { createLogger, format, transports, error }  = require('winston');
 const { combine, timestamp, printf, json, prettyPrint, errors, colorize  } = format;
 
@@ -7,10 +8,10 @@ const devLogger = () => {
   });
 
   return createLogger({
-    level: process.env.DEV_LOGGER_LEVE,
+    level: config.devLoggerLevel,
     //format: format.simple(),
     format: combine(   
-      prettyPrint(),          
+      prettyPrint(),               
       timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),      
       errors({ stack: true }),
       myFormat,        

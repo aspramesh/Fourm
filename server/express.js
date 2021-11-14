@@ -1,5 +1,6 @@
 const express = require('express');
 
+
 const morganlogger = require('morgan');
 const cookieParser = require('cookie-parser');
 const compress = require('compression');
@@ -18,17 +19,18 @@ const routes = require('../index.route');
 const config = require('./config/config');
 const errorMiddleware = require('./middleware/error-handler');
 const notFoundMiddleware = require('./middleware/not-found');
+const winstonLogger  = require('../server/logger')
+
 const app = express();
 
-/*const logger = require('./logger')
-logger.log({heading:'express.js', level: 'error', message: 'This is super secret - hide it.' });
-logger.error("error log")
-logger.warn("warning log")
-logger.info("information log")
-logger.http("http log")
-logger.verbose("verbose log")
-logger.debug("debug log")
-logger.silly("silly log")*/
+/*winstonLogger.log({heading:'express.js', level: 'error', message: 'This is super secret - hide it.' });
+winstonLogger.error("error log")
+winstonLogger.warn("warning log")
+winstonLogger.info("information log")
+winstonLogger.http("http log")
+winstonLogger.verbose("verbose log")
+winstonLogger.debug("debug log")
+winstonLogger.silly("silly log")*/
 
 if (config.env === 'development') {
   app.use(morganlogger('dev'));
@@ -48,14 +50,20 @@ app.use(mongoSanitize());
 app.use(express.static('./public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser());
+app.use(cookieParser(process.env.JWT_SECRET));
 app.use(compress());
 app.use(methodOverride());
 app.use(fileUpload());
 
+app.use((req, res, next) => {
+    winstonLogger.info("Request header " +  req.method + " " + req.url);
+    //winstonLogger.info("Request body " + {...req.body});
+    next();
+});
 
 // mount all routes on /api path
 app.use('/api', routes);
+
 
 //error handling
 app.use(notFoundMiddleware);

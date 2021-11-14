@@ -1,13 +1,14 @@
+const config = require('../config/config');
 const  { createLogger, format, transports }  = require('winston');
 const { combine, timestamp,  printf, json, prettyPrint, errors, colorize  } = format;
 
 const prodLogger = () => {
 
   return createLogger({
-    level: process.env.PROD_LOGGER_LEVE,
+    level: config.prodLoggerLevel,
     //format: simple(),
     format: combine(
-      prettyPrint(),      
+      prettyPrint(),           
       timestamp(),
       errors({ stack: true }),
       json()

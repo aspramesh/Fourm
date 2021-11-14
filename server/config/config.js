@@ -21,7 +21,13 @@ const envVarsSchema = Joi.object({
   MONGO_HOST: Joi.string().required()
     .description('Mongo DB host url'),
   MONGO_PORT: Joi.number()
-    .default(27017)
+    .default(27017),
+  PROD_LOGGER_LEVEL: Joi.string()
+    .allow(['error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly'])
+    .default('info'),
+  DEV_LOGGER_LEVEL: Joi.string()
+    .allow(['error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly'])
+    .default('silly'),
 }).unknown()
   .required();
 
@@ -34,6 +40,8 @@ const config = {
   port: envVars.PORT,
   mongooseDebug: envVars.MONGOOSE_DEBUG,
   jwtSecret: envVars.JWT_SECRET,
+  prodLoggerLevel: envVars.PROD_LOGGER_LEVEL,
+  devLoggerLevel: envVars.DEV_LOGGER_LEVEL,
   mongo: {
     host: envVars.MONGO_HOST,
     port: envVars.MONGO_PORT

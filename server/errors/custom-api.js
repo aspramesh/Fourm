@@ -14,7 +14,7 @@ class ExtendableError extends Error {
 
 class CustomAPIError extends ExtendableError {
    constructor(message, status = StatusCodes.INTERNAL_SERVER_ERROR, isPublic = false) {
-    super(message, status, isPublic);
+    super(message, status, isPublic);    
   }
 }
 

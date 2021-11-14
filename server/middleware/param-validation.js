@@ -30,7 +30,7 @@ module.exports = {
   // POST /api/auth/login
   login: {
     body: {
-      username: Joi.string().required().error(() => {return {message: 'Username can not be empty'};}),
+      email: Joi.string().required().error(() => {return {message: 'Email can not be empty'};}),
       password: Joi.string().required().error(() => {return {message: 'Password can not be empty'};})
     }
   },

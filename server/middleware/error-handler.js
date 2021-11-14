@@ -1,13 +1,15 @@
 const  {StatusCodes}  = require('http-status-codes');
 const CustomError = require('../errors');
 const expressValidation = require('express-validation');
+const responseFormatter = require('./responseFormatter');
 
-const errorHandlerMiddleware = async (err, req, res, next) => {  
+const errorHandlerMiddleware = async (err, req, res, next) => {    
   if (err instanceof expressValidation.ValidationError) {
     // validation error contains errors which is an array of error each containing message[]
     const unifiedErrorMessage = err.errors.map(error => error.messages.join('. ')).join(' and ');
-    const error = new CustomError.ValidationError (unifiedErrorMessage, StatusCodes.UNPROCESSABLE_ENTITY, true);
-    return res.status(error.status).json({...error,  "message":error.message || 'Something went wrong try again later'})
+    const error = new CustomError.ValidationError (unifiedErrorMessage, StatusCodes.UNPROCESSABLE_ENTITY, true);    
+    //return res.status(error.status).json({...error,  "message":error.message || 'Something went wrong try again later'})    
+    return res.status(error.status).json(responseFormatter("error", error.message || 'Something went wrong try again later', '', error))
   } else if (!(err instanceof CustomError.CustomAPIError)) {     
     const error = new CustomError.InternalError(err.message, StatusCodes.INTERNAL_SERVER_ERROR, err.isPublic||true);     
     if (err.name === 'ValidationError') {
@@ -22,10 +24,12 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
       error.message = `No item found with id : ${err.value}`;
       error.status = StatusCodes.NOT_FOUND;    
     }  
-    return res.status(error.status||StatusCodes.INTERNAL_SERVER_ERROR).json({...error,  "message":error.message || 'Something went wrong try again later'})
+    //return res.status(error.status||StatusCodes.INTERNAL_SERVER_ERROR).json({...error,  "message":error.message || 'Something went wrong try again later'})
+    return res.status(error.status||StatusCodes.INTERNAL_SERVER_ERROR).json(responseFormatter("error", error.message || 'Something went wrong try again later', '', error))
   } else {    
    //const error = new CustomError.CustomAPIError(err.message|| 'Something went wrong try again later', err.status || StatusCodes.BAD_REQUEST, err.isPublic||true);  
-   return res.status(err.status||StatusCodes.BAD_REQUEST).json({...err, "message": err.message || 'Something went wrong try again later'})      
+   //return res.status(err.status||StatusCodes.BAD_REQUEST).json({...err, "message": err.message || 'Something went wrong try again later'})      
+   return res.status(err.status||StatusCodes.BAD_REQUEST).json(responseFormatter("error", err.message || 'Something went wrong try again later', '', err))      
   } 
 }
 

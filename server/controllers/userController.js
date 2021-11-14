@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
+const responseFormatter = require('../middleware/responseFormatter');
+
 const {
   createTokenUser,
   attachCookiesToResponse,
@@ -10,7 +12,7 @@ const {
 const getAllUsers = async (req, res) => {
   console.log(req.user);
   const users = await User.find({ role: 'user' }).select('-password');
-  res.status(StatusCodes.OK).json({ users });
+  res.status(StatusCodes.OK).json(responseFormatter("success", '', users));
 };
 
 const getSingleUser = async (req, res) => {
@@ -19,7 +21,7 @@ const getSingleUser = async (req, res) => {
     throw new CustomError.NotFoundError(`No user with id : ${req.params.id}`);
   }
   checkPermissions(req.user, user._id);
-  res.status(StatusCodes.OK).json({ user });
+  res.status(StatusCodes.OK).json(responseFormatter("success", '', user));
 };
 
 const deleteSingleUser = async (req, res) => {
@@ -28,7 +30,7 @@ const deleteSingleUser = async (req, res) => {
     throw new CustomError.NotFoundError(`No user with id : ${req.params.id}`);
   }
   await user.remove();  
-  res.status(StatusCodes.OK).json({ user });
+  res.status(StatusCodes.OK).json(responseFormatter("success", '', user));
 };
 
 const showCurrentUser = async (req, res) => {
@@ -36,7 +38,7 @@ const showCurrentUser = async (req, res) => {
   if (!user) {
     throw new CustomError.NotFoundError(`No user with id : ${req.user.userId}`);
   }  
-  res.status(StatusCodes.OK).json({ user });
+  res.status(StatusCodes.OK).json(responseFormatter("success", '',  user));
 };
 
 // update user with user.save()
@@ -55,7 +57,7 @@ const updateUser = async (req, res) => {
 
   const tokenUser = createTokenUser(user);
   attachCookiesToResponse({ res, user: tokenUser });
-  res.status(StatusCodes.OK).json({ user: tokenUser });
+  res.status(StatusCodes.OK).json(responseFormatter("success", '', { user: tokenUser }));
 
 };
 
@@ -73,7 +75,7 @@ const updateUserPassword = async (req, res) => {
   user.password = newPassword;
 
   await user.save();
-  res.status(StatusCodes.OK).json({ msg: 'Success! Password Updated.' });
+  res.status(StatusCodes.OK).json(responseFormatter("success", 'Success! Password Updated.'));
 };
 
 module.exports = {
