@@ -2,7 +2,7 @@ const  {StatusCodes}  = require('http-status-codes');
 const CustomError = require('../errors');
 const expressValidation = require('express-validation');
 
-const errorHandlerMiddleware = async (err, req, res, next) => {      
+const errorHandlerMiddleware = async (err, req, res, next) => {  
   if (err instanceof expressValidation.ValidationError) {
     // validation error contains errors which is an array of error each containing message[]
     const unifiedErrorMessage = err.errors.map(error => error.messages.join('. ')).join(' and ');

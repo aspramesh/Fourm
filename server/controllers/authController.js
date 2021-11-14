@@ -14,7 +14,7 @@ const crypto = require('crypto');
 const register = async (req, res) => {
   
   const {firstName, middleName, lastName, mobileNumber, email, password, externalId} = req.body;
-
+ 
   const emailAlreadyExists = await User.findOne({ email });
   if (emailAlreadyExists) {
     throw new CustomError.BadRequestError('Email already exists');
