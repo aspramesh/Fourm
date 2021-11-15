@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const CustomError = require('../errors');
 
 // require and configure dotenv, will load vars in .env in PROCESS.ENV
 require('dotenv').config();
@@ -6,7 +7,7 @@ require('dotenv').config();
 // define validation for all the env vars
 const envVarsSchema = Joi.object({
   NODE_ENV: Joi.string()
-    .allow(['development', 'production', 'test', 'provision'])
+    .valid('development', 'production', 'test', 'provision')
     .default('development'),
   PORT: Joi.number()
     .default(4040),
@@ -23,17 +24,18 @@ const envVarsSchema = Joi.object({
   MONGO_PORT: Joi.number()
     .default(27017),
   PROD_LOGGER_LEVEL: Joi.string()
-    .allow(['error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly'])
+   // .valid('error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly')
     .default('info'),
   DEV_LOGGER_LEVEL: Joi.string()
-    .allow(['error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly'])
+    //.valid('error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly')
     .default('silly'),
 }).unknown()
   .required();
 
-const { error, value: envVars } = Joi.validate(process.env, envVarsSchema);
+const { error, value: envVars } = envVarsSchema.validate(process.env);
 if (error) {
-  throw new Error(`Config validation error: ${error.message}`);
+  //throw new Error(`Config validation error: ${error.message}`);
+  throw new CustomError.InternalError(`Config validation error: ${error.message}`);
 }
 const config = {
   env: envVars.NODE_ENV,

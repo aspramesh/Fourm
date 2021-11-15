@@ -57,7 +57,7 @@ app.use(fileUpload());
 
 app.use((req, res, next) => {
     winstonLogger.info("Request header " +  req.method + " " + req.url);
-    //winstonLogger.info("Request body " + {...req.body});
+    winstonLogger.info("Request body " + req);
     next();
 });
 

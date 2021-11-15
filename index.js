@@ -2,6 +2,7 @@ require('express-async-errors');
 const app = require('./server/express');
 const connectDB = require('./server/db/connect');
 const config = require('./server/config/config');
+const CustomError = require('./server/errors');
 
 // connect to mongo db
 const mongoUrl = config.mongo.host;
@@ -16,7 +17,8 @@ const mongooseDebug = config.mongooseDebug;
       app.listen(config.port, () => console.info(`Server started on port ${config.port} (${config.env})`))     
     } catch (error) {
         //console.info(error);
-        throw new Error(`Unable to connect to database : ${error}`);
+        //throw new Error(`Unable to connect to database : ${error}`);
+        throw new CustomError.InternalError(`Unable to connect to database : ${error}`);
     }
   }
 };

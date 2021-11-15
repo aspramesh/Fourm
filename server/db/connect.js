@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const util = require('util');
 const debug = require('debug')('express-mongoose-es6-rest-api:index');
+const CustomError = require('../errors');
+
 // make bluebird default Promise
 Promise = require('bluebird'); // eslint-disable-line no-global-assign
 // plugin bluebird promise in mongoose
@@ -13,7 +15,8 @@ const connectDB = (mongoUrl, mongooseDebug) => {
     let returnPromise = mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });  
 
     mongoose.connection.on('error', () => {       
-      throw new Error(`unable to connect to database: ${mongoUrl}`);
+      //throw new Error(`unable to connect to database: ${mongoUrl}`);
+      throw new CustomError.InternalError(`unable to connect to database: ${mongoUrl}`);
     });
 
     // print mongoose logs in dev env
