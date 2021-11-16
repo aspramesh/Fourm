@@ -20,6 +20,7 @@ const config = require('./config/config');
 const errorMiddleware = require('./middleware/error-handler');
 const notFoundMiddleware = require('./middleware/not-found');
 const winstonLogger  = require('../server/logger')
+const winstonInstance = require('./config/winston');
 
 const app = express();
 
@@ -47,19 +48,34 @@ app.use(helmet());
 app.use(cors());
 app.use(xss());
 app.use(mongoSanitize());
+
 app.use(express.static('./public'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
+
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(compress());
 app.use(methodOverride());
 app.use(fileUpload());
 
-app.use((req, res, next) => {
-    winstonLogger.info("Request header " +  req.method + " " + req.url);
-    winstonLogger.info("Request body " + req);
+/*app.use((req, res, next) => {
+    winstonLogger.info("Request details " + req.ip +  " " + req.method + " " + req.originalUrl + JSON.stringify(req.headers));
+    //winstonLogger.info("Request body " + JSON.stringify(req));
     next();
-});
+});*/
+
+/*if (config.env === 'development') {
+  expressWinston.requestWhitelist.push('body');
+  expressWinston.responseWhitelist.push('body');
+  app.use(expressWinston.logger({
+    winstonInstance,
+    meta: true, // optional: log meta data about request (defaults to true)
+    msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
+    colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
+  }));
+}
+*/
 
 // mount all routes on /api path
 app.use('/api', routes);

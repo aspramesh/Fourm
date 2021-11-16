@@ -12,7 +12,8 @@ const prodLogger = () => {
       timestamp(),
       errors({ stack: true }),
       json()
-    ),
+    ),   
+    colorize: true,
     defaultMeta: { service: 'user-service' },
     transports: [      
       new transports.File({filename: "./Log/prodLog.log", maxsize:5242880, maxFiles:500, tailable:true})

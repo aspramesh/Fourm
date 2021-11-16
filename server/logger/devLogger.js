@@ -14,8 +14,10 @@ const devLogger = () => {
       prettyPrint(),               
       timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),      
       errors({ stack: true }),
-      myFormat,        
+      myFormat,     
+      json()
     ),
+    colorize: true,
     defaultMeta: { service: 'user-service' },
     transports: [
       new transports.Console(),
