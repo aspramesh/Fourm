@@ -1,7 +1,8 @@
 const config = require('../config/config');
 const devLogger = require('./devLogger')
 const prodLogger = require('./prodLogger')
- 
+const winstonInstance = require('./winston')
+
 let winstonLogger = null;
 
 if (config.env === 'development') {
@@ -10,4 +11,4 @@ if (config.env === 'development') {
   winstonLogger = prodLogger()
 }
  
-module.exports = winstonLogger;
+module.exports = {winstonLogger, winstonInstance};

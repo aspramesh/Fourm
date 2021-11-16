@@ -19,8 +19,8 @@ const routes = require('../index.route');
 const config = require('./config/config');
 const errorMiddleware = require('./middleware/error-handler');
 const notFoundMiddleware = require('./middleware/not-found');
-const winstonLogger  = require('../server/logger')
-const winstonInstance = require('./config/winston');
+const {winstonLogger, winstonInstance}  = require('../server/logger')
+const httpStatus = require('http-status');
 
 const app = express();
 
@@ -59,30 +59,29 @@ app.use(compress());
 app.use(methodOverride());
 app.use(fileUpload());
 
-/*app.use((req, res, next) => {
-    winstonLogger.info("Request details " + req.ip +  " " + req.method + " " + req.originalUrl + JSON.stringify(req.headers));
-    //winstonLogger.info("Request body " + JSON.stringify(req));
-    next();
-});*/
-
-/*if (config.env === 'development') {
+if (config.env === 'development') {
   expressWinston.requestWhitelist.push('body');
   expressWinston.responseWhitelist.push('body');
-  app.use(expressWinston.logger({
+  app.use(expressWinston.logger({   
     winstonInstance,
     meta: true, // optional: log meta data about request (defaults to true)
     msg: 'HTTP {{req.method}} {{req.url}} {{res.statusCode}} {{res.responseTime}}ms',
     colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
-  }));
+  })); 
+} else {
+  app.use(expressWinston.logger({winstonInstance})); //if necessary log in production
 }
-*/
 
 // mount all routes on /api path
 app.use('/api', routes);
 
+app.use(expressWinston.errorLogger({ winstonInstance }));
 
 //error handling
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
+
+/*// error handler, send stacktrace only during development
+app.use((err, req, res, next) =>  res.status(err.status).json({message: err.isPublic ? err.message : httpStatus[err.status], stack: config.env === 'development' ? err.stack : {} }));*/
 
 module.exports = app;

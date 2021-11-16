@@ -16,7 +16,7 @@ const prodLogger = () => {
     colorize: true,
     defaultMeta: { service: 'user-service' },
     transports: [      
-      new transports.File({filename: "./Log/prodLog.log", maxsize:5242880, maxFiles:500, tailable:true})
+      new transports.File({filename: "./Log/Log.log", maxsize:5242880, maxFiles:500, tailable:true})
     ],
   });
   

@@ -8,7 +8,7 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
   if (err instanceof ValidationError) {        
     // validation error contains errors which is an array of error each containing message[]
     const unifiedErrorMessage = Object.values(err.details.body).map((item) => item.message).join(', ')
-    const error = new CustomError.ValidationError (unifiedErrorMessage, StatusCodes.UNPROCESSABLE_ENTITY, true);    
+    const error = new CustomError.ValidationError (unifiedErrorMessage, StatusCodes.UNPROCESSABLE_ENTITY, true);      
     //return res.status(error.status).json({...error,  "message":error.message || 'Something went wrong try again later'})    
     return res.status(error.status).json(responseFormatter("error", error.message || 'Something went wrong try again later', '', error))
   } else if (!(err instanceof CustomError.CustomAPIError)) {         
