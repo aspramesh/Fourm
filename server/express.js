@@ -69,7 +69,7 @@ if (config.env === 'development') {
     colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
   })); 
 } else {
-  app.use(expressWinston.logger({winstonInstance})); //if necessary log in production
+  app.use(expressWinston.logger({winstonInstance})); //check if necessary log in production
 }
 
 // mount all routes on /api path

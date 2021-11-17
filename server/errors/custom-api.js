@@ -1,4 +1,6 @@
 const StatusCodes = require('http-status');
+const config = require('../config/config');
+
 class ExtendableError extends Error {
   constructor(message, status, isPublic) {
     super(message);
@@ -8,6 +10,7 @@ class ExtendableError extends Error {
     this.isPublic = isPublic;
     this.isOperational = true; // This is required since bluebird 4 doesn't append it anymore.
     Error.captureStackTrace(this, this.constructor.name);
+    //if (config.env === 'development') { Error.captureStackTrace(this, this.constructor.name);}
   }
 }
 

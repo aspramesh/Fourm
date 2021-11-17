@@ -17,7 +17,8 @@ const logger = createLogger ({
     ),
     colorize: true,
     defaultMeta: { service: 'user-service' },
-  transports: [          
+  transports: [ 
+    new (transports.Console)({json: true, colorize: true}), //check if necessary log in production
     new transports.File({filename: "./Log/Log.log", maxsize:5242880, maxFiles:500, tailable:true})
   ]
 });

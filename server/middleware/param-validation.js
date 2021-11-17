@@ -53,9 +53,9 @@ module.exports = {
       mobileNumber: Joi.string().regex(/^[\+]?[(]?[0-9]{1,3}[)]?[-\s\.]?[0-9]{3,15}$/).required().messages({"string.pattern.base": "Please provide valid mobile number!", "any.required": "Mobile number is required!", "string.empty": "Mobile number can't be empty!",}),      
       email: Joi.string().email().required().messages({"string.email": "Please provide a valid email", "any.required": "Email is required!", "string.empty": "Email can't be empty!",})     
      }).options({ stripUnknown: true }),  
-    params: Joi.object({
+    /*params: Joi.object({
       userId: Joi.string().hex().required().messages({"string.hex": "User id must only contain hexadecimal characters", "any.required": "User id is required!", "string.empty": "User id can't be empty!",})      
-    }).options({ stripUnknown: true }),  
+    }).options({ stripUnknown: true }),  */
   },
 
   // POST /api/auth/login
@@ -85,5 +85,12 @@ module.exports = {
       verificationToken: Joi.string().token().required().messages({"string.token": "Token must only contain alpha-numeric and underscore characters", "any.required": "Token is required!", "string.empty": "Token can't be empty!",}),
       email: Joi.string().email().required().messages({"string.email": "Please provide a valid email", "any.required": "Email is required!", "string.empty": "Email can't be empty!",})
      }).options({ stripUnknown: true }), 
-  }
+  },
+
+  validateUpdateUserPassword: {
+    body: Joi.object({
+      oldPassword: Joi.string().required().messages({"any.required": "Old password is required!", "string.empty": "Old password can't be empty!",}),      
+      newPassword:Joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/).required().messages({"string.pattern.base": "New password should be minimum 8 characters long, should have 1 upper case and 1 lower case, 1 number and 1 special character", "any.required": "New password is required!", "string.empty": "New password can't be empty!",})
+     }).options({ stripUnknown: true }), 
+  },
 };

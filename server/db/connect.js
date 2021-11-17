@@ -10,12 +10,13 @@ mongoose.Promise = Promise;
 
 //mongoose.connect(mongoUrl, {useNewUrlParser: true }, () => console.info('Connected to DB'));
 const connectDB = (mongoUrl, mongooseDebug) => {    
+  
     //let returnPromise = mongoose.connect(mongoUrl, {server: { socketOptions: { keepAlive: 1 }}})
     //let returnPromise = mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
     let returnPromise = mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });  
 
     mongoose.connection.on('error', () => {       
-      //throw new Error(`unable to connect to database: ${mongoUrl}`);
+      //throw new Error(`unable to connect to database: ${mongoUrl}`);      
       throw new CustomError.InternalError(`unable to connect to database: ${mongoUrl}`);
     });
 
@@ -24,7 +25,7 @@ const connectDB = (mongoUrl, mongooseDebug) => {
         mongoose.set('debug', (collectionName, method, query, doc) => {
             debug(`${collectionName}.${method}`, util.inspect(query, false, 20), doc);
          });
-    }
+    }    
     return returnPromise;
 }
 

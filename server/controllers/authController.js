@@ -147,6 +147,7 @@ const forgotPassword = async (req, res) => {
 
   if (user) {
     const passwordToken = crypto.randomBytes(70).toString('hex');
+    
     // send email
     const origin = 'http://localhost:3000';
     await sendResetPasswordEmail({
@@ -177,7 +178,6 @@ const resetPassword = async (req, res) => {
 
   if (user) {
     const currentDate = new Date();
-
     if (
       user.passwordToken === createHash(token) &&
       user.passwordTokenExpirationDate > currentDate

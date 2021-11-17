@@ -4,10 +4,17 @@ const CustomError = require('../errors');
 const { ValidationError } = require('express-validation')
 const responseFormatter = require('./responseFormatter');
 
-const errorHandlerMiddleware = async (err, req, res, next) => {    
-  if (err instanceof ValidationError) {        
+const errorHandlerMiddleware = async (err, req, res, next) => {   
+  if (err instanceof ValidationError) {         
     // validation error contains errors which is an array of error each containing message[]
-    const unifiedErrorMessage = Object.values(err.details.body).map((item) => item.message).join(', ')
+    let unifiedErrorMessage
+    if(err.details.body != undefined) {
+     unifiedErrorMessage = Object.values(err.details.body).map((item) => item.message).join(', ')
+    } else if (err.details.params != undefined) {
+      unifiedErrorMessage = Object.values(err.details.params).map((item) => item.message).join(', ')
+    } else {
+      unifiedErrorMessage = ""
+    }
     const error = new CustomError.ValidationError (unifiedErrorMessage, StatusCodes.UNPROCESSABLE_ENTITY, true);      
     //return res.status(error.status).json({...error,  "message":error.message || 'Something went wrong try again later'})    
     return res.status(error.status).json(responseFormatter("error", error.message || 'Something went wrong try again later', '', error))

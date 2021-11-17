@@ -47,7 +47,7 @@ const updateUser = async (req, res) => {
 
   user.firstName = req.body.firstName,
   user.middleName = req.body.middleName,
-  user.lastNamereq.body.lastName,
+  user.lastName = req.body.lastName,
   user.mobileNumber = req.body.mobileNumber,
   user.email = req.body.email,    
   user.externalId = req.body.externalId    
