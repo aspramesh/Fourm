@@ -9,19 +9,22 @@ const { refreshToken, accessToken } = req.signedCookies;
   try {
     if (accessToken) {
       const payload = isTokenValid(accessToken);
-      req.user = payload.user;
+      req.user = payload.user;            
       return next();
     }
-    const payload = isTokenValid(refreshToken);
-
+    const payload = isTokenValid(refreshToken);    
     const existingToken = await Token.findOne({
       user: payload.user.userId,
       refreshToken: payload.refreshToken,
     });
-
     if (!existingToken || !existingToken?.isValid) {
+    //if (!existingToken)  {
       throw new CustomError.UnauthenticatedError('Authentication Invalid');
     }
+    /*if (!existingToken?.isValid) {
+     // Token.findByIdAndRemove(existingToken._id, { useFindAndModify: false }).exec(); 
+      throw new CustomError.UnauthenticatedError('Authentication Invalid'); 
+    }*/
 
     attachCookiesToResponse({
       res,

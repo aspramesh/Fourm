@@ -3,7 +3,7 @@ const express = require('express');
 const { validate } = require('express-validation')
 //const { check, validationResult } = require('express-validator');
 const paramValidation = require('../middleware/param-validation');
-const { validateRegister, validateLogin, validateForgotPassword, validateResetPassword, validateVerifyEmail  } = paramValidation;
+const { validateRegister, validateLogin, validateForgotPassword, validateResetPassword, validateVerifyEmail, validateRefreshToken  } = paramValidation;
 const router = express.Router();
 const { authenticateUser } = require('../middleware/authentication');
 
@@ -14,6 +14,7 @@ const {
   verifyEmail,
   forgotPassword,
   resetPassword,
+  refreshToken,
 } = require('../controllers/authController');
 
 router.post('/v1/register', validate(validateRegister, {}, {abortEarly: false}), register);
