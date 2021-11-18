@@ -93,4 +93,11 @@ module.exports = {
       newPassword:Joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/).required().messages({"string.pattern.base": "New password should be minimum 8 characters long, should have 1 upper case and 1 lower case, 1 number and 1 special character", "any.required": "New password is required!", "string.empty": "New password can't be empty!",})
      }).options({ stripUnknown: true }), 
   },
+
+  validateRefreshToken: {
+    body: Joi.object({
+      refreshToken: Joi.string().token().required().messages({"string.token": "Refresh token must only contain alpha-numeric and underscore characters", "any.required": "Refresh token is required!", "string.empty": "Refresh token can't be empty!",})            
+     }).options({ stripUnknown: true }), 
+  },
+
 };

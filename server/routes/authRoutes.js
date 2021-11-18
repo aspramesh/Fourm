@@ -18,6 +18,7 @@ const {
 
 router.post('/v1/register', validate(validateRegister, {}, {abortEarly: false}), register);
 router.post('/v1/login', validate(validateLogin, {}, {abortEarly: false}), login);
+router.post('/v1/refreshToken', validate(validateRefreshToken, {}, {abortEarly: false}), refreshToken);
 router.delete('/v1/logout', authenticateUser, logout);
 router.post('/v1/verify-email', validate(validateVerifyEmail, {}, {abortEarly: false}), verifyEmail);
 router.post('/v1/reset-password', validate(validateResetPassword, {}, {abortEarly: false}), resetPassword);

@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Token = require('../models/Token');
+const { isTokenValid } = require('../utils/jwt');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const responseFormatter = require('../middleware/responseFormatter');
@@ -192,6 +193,32 @@ const resetPassword = async (req, res) => {
    res.status(StatusCodes.OK).json(responseFormatter("success",'Password reset'));
 };
 
+const refreshToken = async (req, res) => {
+  const { refreshToken: requestToken } = req.body;
+  /*if (requestToken == null) {
+    return res.status(403).json({ message: "Refresh Token is required!" });
+  }*/ 
+  let refreshToken = await Token.findOne({ refreshToken: requestToken });
+  if (!refreshToken) {
+    throw new CustomError.UnauthorizedError('Invalid Credentials');
+    //res.status(403).json({ message: "Refresh token is not in database!" });
+    //return;
+  }
+  Token.findByIdAndRemove(refreshToken._id, { useFindAndModify: false }).exec();      
+  const user = await User.findOne({_id: refreshToken.user});
+  if (!user) {
+    throw new CustomError.UnauthenticatedError('Invalid Credentials');
+  }
+  const tokenUser = createTokenUser(user);
+  refreshToken = crypto.randomBytes(40).toString('hex');
+  const userAgent = req.headers['user-agent'];
+  const ip = req.ip;
+  const userToken = { refreshToken, ip, userAgent, user: user._id };
+  await Token.create(userToken);
+  attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+  res.status(StatusCodes.OK).json(responseFormatter("success","", {user: tokenUser}));
+};
+
 module.exports = {
   register,
   login,
@@ -199,4 +226,5 @@ module.exports = {
   verifyEmail,
   forgotPassword,
   resetPassword,
+  refreshToken,
 };

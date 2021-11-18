@@ -1,6 +1,5 @@
 const express = require('express');
 
-
 const morganlogger = require('morgan');
 const cookieParser = require('cookie-parser');
 const compress = require('compression');
@@ -21,6 +20,8 @@ const errorMiddleware = require('./middleware/error-handler');
 const notFoundMiddleware = require('./middleware/not-found');
 const {winstonLogger, winstonInstance}  = require('../server/logger')
 const httpStatus = require('http-status');
+
+const corsOptions = {  origin: "http://localhost:8081" };
 
 const app = express();
 
@@ -44,8 +45,10 @@ app.use(
     max: 60,
   })
 );
+
 app.use(helmet());
-app.use(cors());
+//app.use(cors());
+app.use(cors(corsOptions));
 app.use(xss());
 app.use(mongoSanitize());
 
@@ -53,7 +56,6 @@ app.use(express.static('./public'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
-
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(compress());
 app.use(methodOverride());
